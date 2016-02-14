@@ -9,7 +9,11 @@ function appService($http) {
     return {
         searchByKeyword: function (keyword) {
             return $http.get("keyword/" + keyword, {});
+        },
+        searchByKeywordContinue: function (keyword) {
+            return $http.get("/continue/"+keyword,{});
         }
+
     }
 }
 
@@ -42,11 +46,19 @@ appController.$inject = ['$scope', 'appService'];
 
 function appController($scope, appService) {
 
+    var Continue = true;
+    var i = 0;
+    var interval = 0;
+
     $scope.getTweets = function () {
 
         if ($scope.searched_keyword) {
+          /* if(interval == 0) {
+                i = 0;
+                Continue = true;
+                startStreamingApiSevice(i);
+            }else Continue = false;*/
             appService.searchByKeyword($scope.searched_keyword).then(function successCallback(response) {
-
                 $scope.tweets = JSON.parse(response.data);
                 console.log($scope.tweets);
             }, function errorCallback(response) {
@@ -55,20 +67,24 @@ function appController($scope, appService) {
         }
     };
 
-    var Continue = true;
-    var i = 0;
-    var interval = 0;
-
     function startStreamingApiSevice(index) {
         interval = setInterval(function () {
             if (Continue) {
                 if (index > 0) {
+                    appService.searchByKeywordContinue($scope.searched_keyword).then(function successCallback(response) {
 
+                        $scope.tweets = JSON.parse(response.data);
+                        index++;
+                        console.log(index);
+                    }, function errorCallback(response) {
+                        console.log(response);
+                    });
                 } else {
                     appService.searchByKeyword($scope.searched_keyword).then(function successCallback(response) {
 
                         $scope.tweets = JSON.parse(response.data);
-                        i++;
+                        index++;
+                        console.log(index);
                     }, function errorCallback(response) {
                         console.log(response);
                     });
@@ -78,12 +94,11 @@ function appController($scope, appService) {
                 clearInterval(interval);
                 interval = 0;
             }
-        }, 200);
+        }, 10);
     }
 
     $scope.correctTimestring = function (string) {
         var d = new Date(Date.parse(string));
-
         return d;
     };
 

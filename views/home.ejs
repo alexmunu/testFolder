@@ -1,5 +1,19 @@
+<html>
+<head>
+    <title>TwitTrack</title>
+    <link rel='stylesheet' href='./stylesheets/bootstrap.min.css'/>
+    <link rel="stylesheet" href='./stylesheets/style.css'>
+</head>
+<body style="margin: 25px">
 <% if (!user) { %>
-<p>Welcome! Please <a href="/login">log in</a>.</p>
+<% include login.ejs %>
 <% } else { %>
-<p>Hello, <%= user.username %>. View your <a href="/index">profile</a>.</p>
+<% include profile.ejs %>
 <% } %>
+<script src="./javascripts/jquery-2.1.4.min.js"></script>
+<script src="./javascripts/bootstrap.min.js"></script>
+<script src="./node_modules/angular/angular.js"></script>
+<script src="./javascripts/angular-route.min.js"></script>
+</body>
+
+</html>

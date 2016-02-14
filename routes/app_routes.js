@@ -28,19 +28,19 @@ module.exports = function (passport, app, mongoose) {
 
     router.get('/login',
         function (req, res) {
-            res.render('login');
+            res.render('home');
         });
 
     router.get('/login/twitter',
         passport.authenticate('twitter'));
 
     router.get('/login/twitter/return',
-        passport.authenticate('twitter', {failureRedirect: '/login'}),
+        passport.authenticate('twitter', {failureRedirect: '/home'}),
         function (req, res) {
             tokens = {
                 "oauth_token": req.user.oauth_token,
                 "oauth_token_secret": req.user.oauth_token_secret
-            }
+            };
             console.log("User logged successfully");
             //insert_user_in_MongoDB(req.user);
             res.redirect('/');
@@ -55,6 +55,13 @@ module.exports = function (passport, app, mongoose) {
     router.get('/index',
         require('connect-ensure-login').ensureLoggedIn(),
         function (req, res) {
+            twitter = new Twitter({
+                consumer_key: process.env.CONSUMER_KEY || 'ls0WaY14Ey2T3JKrYmeJnWBov',
+                consumer_secret: process.env.CONSUMER_SECRET || '4mAV5XmARLO46mP2b01ckuwHQ2NnMFrhUBr3qOmowmHDLnzBTN',
+                access_token: tokens.oauth_token,
+                access_token_secret: tokens.oauth_token_secret,
+                callBackUrl: 'http://127.0.0.1:3000/login/twitter/return'
+            });
             res.render('index', {user: req.user});
         });
 
@@ -75,13 +82,7 @@ module.exports = function (passport, app, mongoose) {
     /* GET tweets listing. */
 
     router.get('/keyword/:word', function (req, res) {
-        twitter = new Twitter({
-            consumer_key: process.env.CONSUMER_KEY || 'ls0WaY14Ey2T3JKrYmeJnWBov',
-            consumer_secret: process.env.CONSUMER_SECRET || '4mAV5XmARLO46mP2b01ckuwHQ2NnMFrhUBr3qOmowmHDLnzBTN',
-            access_token: tokens.oauth_token,
-            access_token_secret: tokens.oauth_token_secret,
-            callBackUrl: 'http://127.0.0.1:3000/login/twitter/return'
-        });
+
         /* getSearchedTweets_TW_ApiService.then(storeTweetsInMongoDB).then(getsearchedTweets).done(function(){
          res.json.json(searched_tweets);
          });*/
@@ -91,16 +92,21 @@ module.exports = function (passport, app, mongoose) {
             if (!searched_tweets)
                 res.json({"Message": "EmptyList"});
             else {
-                Tweet.collection.insert(searched_tweets, function (err, docs) {
-                    if (err) {
-                        console.error(err.message);
-                    } else {
-                        console.info('Tweets successfully stored.', docs.length);
-                        Tweet.find({"coordinates": {$ne: null}}, function (err, docs) {
-                            if (!err) {
-                                //console.log(JSON.stringify(docs));
-                                res.json(JSON.stringify(docs));
-                            } else console.error(err.message);
+                Tweet.remove({}, function (err, removed) {
+                    if (!err) {
+                        console.log('collection removed');
+                        Tweet.collection.insert(searched_tweets, function (err, docs) {
+                            if (err) {
+                                console.error(err.message);
+                            } else {
+                                console.info('Tweets successfully stored.', docs.length);
+                                Tweet.find({"coordinates": {$ne: null}}, function (err, docs) {
+                                    if (!err) {
+                                        //console.log(JSON.stringify(docs));
+                                        res.json(JSON.stringify(docs));
+                                    } else console.error(err.message);
+                                });
+                            }
                         });
                     }
                 });
@@ -109,9 +115,33 @@ module.exports = function (passport, app, mongoose) {
     });
 
     router.get('/continue/:word', function (req, res) {
-        Tweet.findOne({}, null, {sort: {id: -1 }},  function (err, docs) {
+        Tweet.findOne({}, null, {sort: {id: -1}}, function (err, docs) {
             if (!err) {
-                res.json(docs);
+                var last_id = docs.id;
+                twitter.get('search/tweets', {
+                    q: req.params.word,
+                    count: 100,
+                    since_id: last_id
+                }, function (err, data, response) {
+                    searched_tweets = data.statuses;
+                    if (!searched_tweets)
+                        res.json({"Message": "EmptyList"});
+                    else {
+                        Tweet.collection.insert(searched_tweets, function (err, docs) {
+                            if (err) {
+                                console.error(err.message);
+                            } else {
+                                console.info('Tweets successfully stored.', docs.length);
+                                Tweet.find({"coordinates": {$ne: null}}, function (err, docs) {
+                                    if (!err) {
+                                        //console.log(JSON.stringify(docs));
+                                        res.json(JSON.stringify(docs));
+                                    } else console.error(err.message);
+                                });
+                            }
+                        });
+                    }
+                });
             } else console.error(err.message);
         });
     });

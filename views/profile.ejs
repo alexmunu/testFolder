@@ -1,42 +1,36 @@
-<!-- views/profile.ejs -->
-<!doctype html>
-<html>
-<head>
-  <title>Node Authentication</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-  <style>
-    body 		{ padding-top:80px; word-wrap:break-word; }
-  </style>
-</head>
-<body>
 <div class="container">
 
-  <div class="page-header text-center">
-    <h1><span class="fa fa-anchor"></span> Profile Page</h1>
-    <a href="/logout" class="btn btn-default btn-sm">Logout</a>
-  </div>
-
-  <div class="row">
-
-    <!-- TWITTER INFORMATION -->
-    <div class="col-sm-6">
-      <div class="well">
-        <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
-
-        <p>
-          <strong>id</strong>: <%= user.id %><br>
-          <strong>token</strong>: <%= user.twitter_token%><br>
-          <strong>username</strong>: <%= user.username %><br>
-          <strong>displayName</strong>: <%= user.displayName %>
-          <strong>User Json</strong>:<%= user._json.profile_image_url%>
-        </p>
-
-      </div>
+    <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> TwitTrack</h1>
+        <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
     </div>
 
-  </div>
+    <div class="row">
+
+        <!-- TWITTER INFORMATION -->
+        <div class="col-md-6 col-lg-push-3">
+            <div class=" panel-group">
+                <div class="page-header text-center"><h3 class="text-info"><span class="fa fa-twitter"><img
+                                    src="/images/twitter_logo_blue.png" width="32px" height="32px"></span> Profile</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <img src="<%= user._json.profile_image_url %>" class="img-circle" width="48px" height="48px">
+                    </div>
+                    <div class="col-lg-10">
+                        <strong>Username</strong>: @<%= user.username %><br>
+                        <strong>Displayed Name</strong>: <%= user.displayName %><br><br><br>
+
+                        <p class="text-center"><span><strong>Description</strong><br></span><span ><%=user._json.description %></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-push-3">
+            <p class="text-center">Hello, <%= user.username %>. <a class="text-success" href="/index">Start demo application</a></p>
+        </div>
+    </div>
 
 </div>
-</body>
-</html>
