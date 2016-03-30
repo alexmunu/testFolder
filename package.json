@@ -6,7 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "JSONStream": "^1.1.1",
     "angular": "^1.4.7",
+    "angular-oboe": "^0.6.0",
     "bcrypt-nodejs": "latest",
     "body-parser": "~1.13.2",
     "connect-ensure-login": "^0.1.1",
@@ -19,11 +21,13 @@
     "jssha": "1.6.0",
     "mongoose": "~3.8.1",
     "morgan": "^1.6.1",
+    "ngmap": "^1.17.0",
     "passport": "~0.1.17",
     "passport-twitter": "~1.0.2",
+    "q": "latest",
     "serve-favicon": "~2.3.0",
-    "twit": "*",
-    "q":"latest"
+    "socket.io": "^1.2.0",
+    "twit": "*"
   },
   "keywords": [],
   "bugs": {

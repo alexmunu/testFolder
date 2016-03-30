@@ -1,12 +1,14 @@
-module.exports = function (passport, app, mongoose) {
+module.exports = function (passport, app, mongoose,server) {
 
     var express = require('express');
     var router = express.Router();
     var Twitter = require('twit');
     var Tweet = require('../models/Tweet');
-    var Q = require('q');
+    var JSONStream = require('JSONStream');
+    
 
-    var user_model = null;
+    var io = require('socket.io')(server);
+
     var User = null;
     var tokens = null;
     var twitter = null;
@@ -26,7 +28,7 @@ module.exports = function (passport, app, mongoose) {
         res.json({"token": token, "token_secret": token_secret});
     });
 
-    router.get('/login',
+    router.get('/home',
         function (req, res) {
             res.render('home');
         });
@@ -67,11 +69,10 @@ module.exports = function (passport, app, mongoose) {
 
     router.get('/logout', function (req, res) {
         req.logout();
+        req.session.destroy();
         //delete_user_in_MongoDB(req);
         res.redirect('/');
     });
-
-    var searched_tweets = {};
 
     // a middleware function with no mount path. This code is executed for every request to the router
     router.use(function (req, res, next) {
@@ -80,70 +81,88 @@ module.exports = function (passport, app, mongoose) {
     });
 
     /* GET tweets listing. */
+    var stream = null;
 
     router.get('/keyword/:word', function (req, res) {
+        var track = req.params.word;
+        track = track.toLowerCase();
+        stream = twitter.stream('statuses/filter', {locations: [-180,-90,180,90]});
 
-        /* getSearchedTweets_TW_ApiService.then(storeTweetsInMongoDB).then(getsearchedTweets).done(function(){
-         res.json.json(searched_tweets);
-         });*/
-
-        twitter.get('search/tweets', {q: req.params.word, count: 100}, function (err, data, response) {
-            searched_tweets = data.statuses;
-            if (!searched_tweets)
-                res.json({"Message": "EmptyList"});
-            else {
-                Tweet.remove({}, function (err, removed) {
-                    if (!err) {
-                        console.log('collection removed');
-                        Tweet.collection.insert(searched_tweets, function (err, docs) {
-                            if (err) {
-                                console.error(err.message);
-                            } else {
-                                console.info('Tweets successfully stored.', docs.length);
-                                Tweet.find({"coordinates": {$ne: null}}, function (err, docs) {
-                                    if (!err) {
-                                        //console.log(JSON.stringify(docs));
-                                        res.json(JSON.stringify(docs));
-                                    } else console.error(err.message);
-                                });
-                            }
-                        });
+        stream.on('tweet', function (tweet) {
+            if (tweet.text.toLowerCase().indexOf(track) > -1) {
+                console.log(tweet);
+                Tweet.collection.insert(tweet, function (err, docs) {
+                    if (err) {
+                        console.error(err.message );
+                    } else {
+                        console.info('Tweet successfully stored.', docs.length);
                     }
                 });
             }
         });
+
+        res.json("{Message: Service Started}");
     });
 
-    router.get('/continue/:word', function (req, res) {
-        Tweet.findOne({}, null, {sort: {id: -1}}, function (err, docs) {
-            if (!err) {
-                var last_id = docs.id;
-                twitter.get('search/tweets', {
-                    q: req.params.word,
-                    count: 100,
-                    since_id: last_id
-                }, function (err, data, response) {
-                    searched_tweets = data.statuses;
-                    if (!searched_tweets)
-                        res.json({"Message": "EmptyList"});
-                    else {
-                        Tweet.collection.insert(searched_tweets, function (err, docs) {
+    router.get('/start', function (req, res) {
+        res.set('Content-type', 'application/json');
+        Tweet.find().stream().pipe(JSONStream.stringify()).pipe(res);
+    });
+
+
+    var searches = {};
+    io.on('connection', function(socket) {
+        searches[socket.id] = {};
+        socket.on('word', function(q) {
+
+
+            if (!searches[socket.id][q]) {
+                console.log('New Search >>', q);
+
+                var stream = twitter.stream('statuses/filter', {locations: [-180,-90,180,90]});
+
+                stream.on('tweet', function (tweet) {
+                    if (tweet.text.toLowerCase().indexOf(q) > -1) {
+
+                        Tweet.collection.insert(tweet, function (err, docs) {
                             if (err) {
-                                console.error(err.message);
+                                console.error(err.message );
                             } else {
-                                console.info('Tweets successfully stored.', docs.length);
-                                Tweet.find({"coordinates": {$ne: null}}, function (err, docs) {
-                                    if (!err) {
-                                        //console.log(JSON.stringify(docs));
-                                        res.json(JSON.stringify(docs));
-                                    } else console.error(err.message);
-                                });
+                                console.info('Tweet Stored.', docs.length);
                             }
                         });
+                    socket.emit('tweet_' + q, tweet);
                     }
                 });
-            } else console.error(err.message);
+                
+                // https://dev.twitter.com/streaming/overview/connecting
+                stream.on('reconnect', function(req, res, connectInterval) {
+                    console.log('reconnect :: connectInterval', connectInterval)
+                });
+
+                stream.on('disconnect', function(disconnectMessage) {
+                    console.log('disconnect', disconnectMessage);
+                });
+
+                searches[socket.id][q] = stream;
+            }
         });
+
+        socket.on('remove', function(word) {
+            searches[socket.id][word].stop();
+            delete searches[socket.id][word];
+            console.log('Removed Search >>', word);
+        });
+
+        socket.on('disconnect', function() {
+            for (var k in searches[socket.id]) {
+                searches[socket.id][k].stop();
+                delete searches[socket.id][k];
+            }
+            delete searches[socket.id];
+            console.log('Removed All Search from user >>', socket.id);
+        });
+
     });
 
     return router;

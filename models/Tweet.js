@@ -1,6 +1,8 @@
 ﻿var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var TweetSchema = new Schema({ any: {} });
+/*
 var TweetSchema = new Schema({
     metadata: {
         iso_language_code: String,
@@ -76,6 +78,6 @@ var TweetSchema = new Schema({
     favorited: Boolean,
     retweeted: Boolean,
     lang: String
-});
+});*/
 
 module.exports = mongoose.model('Tweet', TweetSchema);

@@ -6,8 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var express_session=require('express-session');
 var mongoose=require('mongoose');
-
 var app = express();
+var http = require('http');
+var server = http.createServer(app);
+
 
 //setup database
 var db=require('./config/database');
@@ -17,7 +19,7 @@ mongoose.connect(db.url);
 var passport=require('./config/passport');
 
 //routes setup
-var routes = require('./routes/app_routes')(passport,app,mongoose);
+var routes = require('./routes/app_routes')(passport,app,mongoose,server);
 //var users = require('./routes/users')();
 app.use('/', routes);
 //app.use('/users', users);
@@ -71,4 +73,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-module.exports = app;
+app.set('port', 3000);
+server.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + app.get('port'));
+});

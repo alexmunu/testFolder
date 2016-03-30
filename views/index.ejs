@@ -5,7 +5,7 @@
     <link rel="stylesheet" href='./stylesheets/style.css'>
 </head>
 <body ng-app="twitrackApp">
-<div ng-controller="appController">
+<div ng-controller="appController as vm">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
 
@@ -55,19 +55,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Tweets Map</div>
                     <div class="panel-body">
-                        <div id="map"></div>
+                        <ng-map center="20,0" zoom="2">
+                            <marker ng-repeat="tweet in tweets" position="{{tweet.positions}}"></marker>
+                        </ng-map>
                     </div>
                 </div>
             </div>
-            <script type="text/javascript">
-                var map;
-                function initMap() {
-                    map = new google.maps.Map(document.getElementById('map'), {
-                        center: {lat: 20, lng: 0},
-                        zoom: 2
-                    });
-                }
-            </script>
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">Pie Chart</div>
@@ -127,11 +120,12 @@
 
 <script src="./javascripts/jquery-2.1.4.min.js"></script>
 <script src="./javascripts/bootstrap.min.js"></script>
+<script src="./node_modules/socket.io/node_modules/socket.io-client/socket.io.js" ></script>
 <script src="./node_modules/angular/angular.js"></script>
 <script src="./javascripts/angular-route.min.js"></script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWMbsqJN7MIuw10hrOj4s90llYS967-Pg&callback=initMap">
-</script>
+<script src="./node_modules/ngmap/build/scripts/ng-map.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWMbsqJN7MIuw10hrOj4s90llYS967-Pg"></script>
+<script src="./javascripts/markerclusterer.js"></script>
 <script src="./javascripts/app/assets/testService.js"></script>
 </body>
 </html>
