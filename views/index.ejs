@@ -2,130 +2,122 @@
 <head>
     <title>TwitTrack</title>
     <link rel='stylesheet' href='./stylesheets/bootstrap.min.css'/>
-    <link rel="stylesheet" href='./stylesheets/style.css'>
+    <link rel='stylesheet' href='./stylesheets/mockup_style.css'/>
+    <link rel="stylesheet" href="./stylesheets/font-awesome.css"/>
+
 </head>
 <body ng-app="twitrackApp">
-<div ng-controller="appController as vm">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+<div ng-controller="appController as vm" class="ng-cloak" >
+    <div class="container">
+        <nav class="navbar navbar-fixed-top navbar-default">
+            <div class="container-fluid">
 
-            <div class="navbar-header">
-                <button class="navbar-toggle collapse" type="button" data-toggle="collapse" data-target="#navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">TwitTrack</a>
-            </div>
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapse" type="button" data-toggle="collapse" data-target="#navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">TwitTrack</a>
+                </div>
 
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">
-                            <img src="<%= user._json.profile_image_url %>" class="img-circle"> <span
-                                    id="span-user-name"><%= user.displayName %><b class="caret"></b></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li role="presentation"><a href="#"><i class="fa fa-cog"></i> My Profile</a></li>
-                            <li class="divider" role="separator"></li>
-                            <li role="presentation"><a href="#"><i class="fa fa-sign-out"></i> About</a></li>
-                            <li class="divider" role="separator"></li>
-                            <li role="presentation"><a href="/logout"><i class="fa fa-sign-out"></i> Sign-out</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                                <img src="<%= user._json.profile_image_url %>" class="img-circle"> <span
+                                        id="span-user-name"><%= user.displayName %><b class="caret"></b></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li role="presentation"><a href="#"><i class="fa fa-cog"></i> My Profile</a></li>
+                                <li class="divider" role="separator"></li>
+                                <li role="presentation"><a href="#"><i class="fa fa-sign-out"></i> About</a></li>
+                                <li class="divider" role="separator"></li>
+                                <li role="presentation"><a href="/logout"><i class="fa fa-sign-out"></i> Sign-out</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
 
-                <form id="search-form" class="navbar-form navbar-right" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control search-query" ng-model="searched_keyword" placeholder="">
-                    </div>
-                    <button type="submit" ng-click="getTweets()" class="btn btn-default"><i
-                                class="glyphicon glyphicon-search"></i></button>
-                </form>
+                    <form id="search-form" class="navbar-form navbar-right" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control search-query" ng-model="searched_keyword"
+                                   placeholder="">
+                        </div>
+                        <button type="submit" ng-click="getTweets()" class="btn btn-primary"><i
+                                    class="glyphicon glyphicon-search"></i></button>
+                    </form>
 
-            </div>
-        </div>
-    </nav>
-
-    <div class="content container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Tweets Map</div>
-                    <div class="panel-body">
-                        <ng-map center="20,0" zoom="2">
-                            <marker ng-repeat="tweet in tweets" position="{{tweet.positions}}"></marker>
-                        </ng-map>
-                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Pie Chart</div>
-                    <div class="panel-body">
-                        <div id="pie-chart"></div>
+        </nav>
+    </div>
+    <ui-gmap-google-map center="{latitude:30, longitude:0}" zoom="3">
+        <ui-gmap-marker ng-repeat="tweet in tweets" idKey="tweet.id" coords="tweet.positions"></ui-gmap-marker>
+    </ui-gmap-google-map>
+
+    <div class="row main-row" id="row-list">
+        <div class="col-sm-8 col-md-12 sidebar sidebar-left pull-left" data-drag>
+            <div class="panel-group sidebar-body" id="accordion-left">
+                <div class="panel panel-default" id="list">
+                    <div class="panel-heading" id="list-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#layers">
+                                <i class="fa fa-list-alt"></i>
+                                List Tweets
+                            </a>
+                  <span class="pull-right slide-submenu " data-slide-btn>
+                    <i class="fa fa-chevron-left"></i>
+                  </span>
+                        </h4>
                     </div>
-                    <div class="panel-footer">Panel Footer</div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Tweets by Keyword/s</div>
-                    <div class="panel-body">
-                        <div class="panel-group">
-                            <div class="panel panel-default" ng-repeat="tweet in tweets">
-                                <div class="panel-body media">
-                                    <span class="badge pull-right">{{correctTimestring(tweet.created_at)}}</span>
-
-                                    <div class="pull-left">
-                                        <img class="img-circle" ng-src="{{tweet.user.profile_image_url_https}}">
-                                    </div>
-                                    <div class="">
-                                        <div class="">
-                                            <a href="#">{{tweet.text}}</a>
-
-                                            <p class="meta">by {{tweet.user.name}} <a
-                                                        href="https://twitter.com/{{tweet.user.screen_name}}"
-                                                        target="_blank" >{{'@'+tweet.user.screen_name}}</a></p>
-                                            <!-- <p class="meta-comments">{{post.data.num_comments}} comments</p> -->
-                                        </div>
-                                    </div>
+                    <div id="layers" class="panel-collapse collapse in">
+                        <div class="panel-body list-body">
+                            <div id="tweet" ng-repeat="tweet in tweets">
+                                <div>
+                                    <blockquote>
+                                        <div class="blockquote-quote"><img class="blockquote-image img-circle" src="{{tweet.user.profile_image_url}}" ><span class="blockquote-text">{{tweet.text}}</span></div>
+                                        <footer>
+                                            <cite title="{{tweet.user.screen_name}}">@{{tweet.user.screen_name}}</cite>
+                                        </footer>
+                                    </blockquote>
                                 </div>
-                                <!-- <div class="panel-body"><p>{{tweet.id}}</p></div> -->
+                                <div id="web_intent">
+                                    <span class="time">{{relative_time(tweet.created_at)}}</span>
+                                    <i class="fa fa-retweet" width="16" height="16" alt="Retweet"></i>
+                                    <a href="http://twitter.com/intent/retweet?tweet_id={{tweet.id_str }}">Retweet</a>
+                                    <i class="fa fa-mail-reply" width="16" height="16" alt="Reply"></i>
+                                    <a href="http://twitter.com/intent/tweet?in_reply_to= {{tweet.id_str }}">Reply</a>
+                                    <i class="fa fa-star" width="16" height="16" alt="Favorite"></i>
+                                    <a href="http://twitter.com/intent/favorite?tweet_id={{tweet.id_str }}">Favorite</a>
+                                </div>
+                                <hr/>
                             </div>
+
+
                         </div>
                     </div>
-                    <div class="panel-footer">Panel Footer</div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Panel Heading</div>
-                    <div class="panel-body"></div>
-                    <div class="panel-footer">Panel Footer</div>
-                </div>
+
             </div>
         </div>
-
-
     </div>
-
+    <div class="mini-submenu mini-submenu-left pull-left">
+        <i class="fa fa-list-alt"></i>
+    </div>
 </div>
-<footer></footer>
-</div>
-
+<script type="text/javascript" async defer src="//platform.twitter.com/widgets.js"></script>
 <script src="./javascripts/jquery-2.1.4.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 <script src="./javascripts/bootstrap.min.js"></script>
-<script src="./node_modules/socket.io/node_modules/socket.io-client/socket.io.js" ></script>
+<script src="./node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
+<script src='./node_modules/angular-google-maps/node_modules/lodash/lodash.js'></script>
 <script src="./node_modules/angular/angular.js"></script>
+<script src='./node_modules/angular-google-maps/node_modules/angular-simple-logger/dist/angular-simple-logger.js'></script>
+<script src="./node_modules/angular-google-maps/dist/angular-google-maps.js"></script>
 <script src="./javascripts/angular-route.min.js"></script>
-<script src="./node_modules/ngmap/build/scripts/ng-map.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWMbsqJN7MIuw10hrOj4s90llYS967-Pg"></script>
-<script src="./javascripts/markerclusterer.js"></script>
 <script src="./javascripts/app/assets/testService.js"></script>
 </body>
 </html>
