@@ -1,4 +1,10 @@
-var main = angular.module("twitrackApp", ['ngMap']);
+var main = angular.module("twitrackApp", ['uiGmapgoogle-maps', 'nemLogging']).config(function (uiGmapGoogleMapApiProvider) {
+    uiGmapGoogleMapApiProvider.configure({
+        key: 'AIzaSyBWMbsqJN7MIuw10hrOj4s90llYS967-Pg',
+        v: '3.22', //defaults to latest 3.X anyhow
+        libraries: 'weather,geometry,visualization'
+    });
+});
 
 main.factory("appService", appService);
 appService.$inject = ['$http'];
@@ -13,7 +19,6 @@ function appService($http) {
         searchByKeywordContinue: function (keyword) {
             return $http.get("/continue/" + keyword, {});
         }
-
     }
 }
 
@@ -30,12 +35,12 @@ function socket($rootScope) {
                 });
             });
         },
-        emit: function (eventName, data,callback) {
-            socket.emit(eventName,data, function () {
+        emit: function (eventName, data, callback) {
+            socket.emit(eventName, data, function () {
                 var args = arguments;
                 $rootScope.$apply(function () {
-                    if(callback)
-                    callback.apply(socket, args);
+                    if (callback)
+                        callback.apply(socket, args);
                 });
             });
         }
@@ -43,31 +48,34 @@ function socket($rootScope) {
 }
 main.controller("appController", appController);
 
-appController.$inject = ['$scope', 'appService','socket','NgMap'];
+appController.$inject = ['$scope', 'socket', 'uiGmapGoogleMapApi'];
 
-function appController($scope, appService,socket,NgMap) {
+function appController($scope, socket, NgMap) {
 
-    $scope.tweets=[];
+    this.zoom = 5;
+    this.center = [0, 0];
+
+    $scope.tweets = [];
     var vm = this;
     vm.dynMarkers = [];
     /*NgMap.getMap().then(function(map) {
 
-        for (var k in map.markers) {
-            var cm = map.markers[k];
-            vm.dynMarkers.push(cm);
-        }
-        vm.markerClusterer = new MarkerClusterer(map, vm.dynMarkers, {});
-    });*/
+     for (var k in map.markers) {
+     var cm = map.markers[k];
+     vm.dynMarkers.push(cm);
+     }
+     vm.markerClusterer = new MarkerClusterer(map, vm.dynMarkers, {});
+     });*/
 
     $scope.getTweets = function () {
         if ($scope.searched_keyword) {
 
-            var word=$scope.searched_keyword;
+            var word = $scope.searched_keyword;
             console.log(word);
-            socket.emit('word',word);
-            socket.on('tweet_'+word,function (tweet) {
+            socket.emit('word', word);
+            socket.on('tweet_' + word, function (tweet) {
                 console.log(word, tweet.id);
-                tweet.positions=getLatLng(tweet);
+                tweet.positions = getLatLng(tweet);
                 $scope.tweets.push(tweet);
             });
         }
@@ -82,28 +90,99 @@ function appController($scope, appService,socket,NgMap) {
     }
 
     function getLatLng(item) {
-        var pos=item;
-        if(item.coordinates){
-            pos=item.coordinates.coordinates;
-            return pos;
+        var pos = item;
+        if (item.coordinates) {
+            pos = item.coordinates.coordinates;
+            console.log(pos);
+            return {latitude: pos[1], longitude: pos[0]};
         }
-        else if(item.place){
-            pos=item.place.bounding_box.coordinates;
-            return pos[0][0];
+        else if (item.place) {
+            pos = item.place.bounding_box.coordinates;
+            var array = pos[0][0];
+            return {latitude: array[1], longitude: array[0]};
         }
-        else if(item.geo){
-            pos=item.geo;
-        return [pos[1],pos[0]];
+        else if (item.geo) {
+            pos = item.geo;
+            console.log(pos[1], pos[0]);
+            return {latitude: pos[0], longitude: pos[1]};
         }
     }
 
+    $scope.correctTimestring = function (time_value) {
+        var values = time_value.split(" ");
+        time_value = values[1] + " " + values[2] + ", " + values[5] + " " + values[3];
+        var parsed_date = Date.parse(time_value);
+        var relative_to = (arguments.length > 1) ? arguments[1] : new Date();
+        var delta = parseInt((relative_to.getTime() - parsed_date) / 1000);
+        delta = delta + (relative_to.getTimezoneOffset() * 60);
 
+        var r = '';
+        if (delta < 60) {
+            r = 'a minute ago';
+        } else if (delta < 120) {
+            r = 'couple of minutes ago';
+        } else if (delta < (45 * 60)) {
+            r = (parseInt(delta / 60)).toString() + ' minutes ago';
+        } else if (delta < (90 * 60)) {
+            r = 'an hour ago';
+        } else if (delta < (24 * 60 * 60)) {
+            r = '' + (parseInt(delta / 3600)).toString() + ' hours ago';
+        } else if (delta < (48 * 60 * 60)) {
+            r = '1 day ago';
+        } else {
+            r = (parseInt(delta / 86400)).toString() + ' days ago';
+        }
 
-    $scope.correctTimestring = function (string) {
-        var d = new Date(Date.parse(string));
-        return d;
+        return r;
     };
+
 }
+
+main.directive('slideBtn', function () {
+
+    var event = function (element, attr) {
+        element.offset()
+        $('.sidebar-left .slide-submenu').on('click',function() {
+            var context_element = $(this);
+            context_element.closest('.sidebar-body').fadeOut('slide', function () {
+                $('.mini-submenu-left').fadeIn().draggable();
+            });
+        });
+
+        $('.mini-submenu-left').on('dblclick',function() {
+            var context_element = $(this);
+            $('.sidebar-left .sidebar-body').toggle('slide');
+            context_element.hide();
+        });
+
+        return function(scope,elem,attrs) {
+            var offset=element.offset();
+            scope.x=offset.left;
+            scope.y=offset.top;
+        }
+    }
+
+    return{
+        restrict:'A',
+        compile:event
+    }
+});
+
+main.directive('drag', function () {
+
+    var event = function (element, attr) {
+        $('.sidebar ').draggable();
+
+        return function(scope,elem,attrs) {
+        }
+    }
+
+    return{
+        restrict:'A',
+        compile:event
+    }
+});
+
 
 
 
