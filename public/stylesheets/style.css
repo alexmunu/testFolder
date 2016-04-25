@@ -1,74 +1,44 @@
 body {
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    overflow: hidden;
 }
 
-a {
-    color: #00B7FF;
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
 }
 
-.panel {
-    margin-bottom: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+.angular-google-map-container {
+    position: absolute;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
 }
 
-#article{
-    margin: 0px;
-}
-#map{
-    height: 400px;
-    border-radius: 10px;
-}
-
-.meta, .meta-comments {
-    font-size:12px;
-    color: #333;
-    margin-bottom: 0;
-}
-.meta-comments {
-    font-weight: bold;
-}
-
-.badge {
-    background-color: #428bca;
-}
-
-.navbar-brand {
-    padding:20px;
-}
+.navbar-nav>li>a {
+    padding-top: 0px;
+    padding-bottom: 0px;}
 
 .navbar-form {
-    padding-top: 9.5px;
-    padding-bottom: 9.5px;
+    padding-top: 4px;
 }
 
-.dropdown-menu {
-    min-width: 100%;
+#search-form {
+    margin:0;
+    margin-top: 5px;
+    padding: 0;
 }
 
-#span-user-name{
-    padding: 9px;
-}
-
-.search-query {
-      min-width: 250px;
-}
-
-#search-form .search-query {
-    padding-right: 50px;
-    padding-left: 50px;
+#search-form .search-query{
+    margin-bottom: 0;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
-    border-radius: 20px;
+    border-radius: 30px;
 }
 
 #search-form button {
-    border:0 ;
+    border: 0;
     background: none;
+    color: #2b3e50;
     /** belows styles are working good */
     padding: 2px 5px;
     margin-top: 2px;
@@ -81,11 +51,109 @@ a {
     border-radius: 3px;
 }
 
-.search-query:hover + button {
+.search-query:focus + button {
     z-index: 3;
 }
 
-.glyphicon-search:before {
-    content: "\e003";
-    color:#000000;
+.zoom-top-opened-sidebar {
+    margin-top: 5px;
 }
+
+.zoom-top-collapsed {
+    margin-top: 45px;
+}
+
+.mini-submenu {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.46);
+    border: 1px solid rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    padding: 9px;
+    /*position: relative;*/
+    width: 42px;
+    text-align: center;
+}
+
+.mini-submenu-left {
+    position: absolute;
+    background: #2b3e50;
+    top: 160px;
+    left: .5em;
+    z-index: 40;
+}
+
+.ui-gmap-google-map {
+    z-index: 35;
+}
+
+.sidebar {
+    z-index: 45;
+}
+
+.main-row {
+    position: relative;
+    top: 150px;
+}
+
+.mini-submenu:hover {
+    cursor: pointer;
+}
+
+.slide-submenu {
+    background: rgba(0, 0, 0, 0.45);
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#row-list {padding: 5px; width:20%}
+
+#list {
+    border-radius: 10px;
+}
+
+#list-heading{
+    border-radius: 10px;
+}
+.list-body{
+    overflow-y:auto;
+    height: 40%;
+}
+
+blockquote {
+    padding: 0px 0px;
+    margin-bottom: 5px;
+}
+.blockquote-quote-img{
+    float:left ;
+    display: block
+}
+
+.blockquote-text{
+    display: block;
+    margin-left: 60px;
+    font-size: 18px;
+}
+
+.time{
+    padding-left: 20px;
+    font-size: 12px;
+}
+::-webkit-scrollbar
+{
+    width: 12px;  /* for vertical scrollbars */
+    height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+    background: rgba(0, 0, 0, 0.5);
+}
+
+

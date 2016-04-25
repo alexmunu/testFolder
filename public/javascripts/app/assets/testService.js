@@ -67,17 +67,51 @@ function appController($scope, socket, NgMap) {
      vm.markerClusterer = new MarkerClusterer(map, vm.dynMarkers, {});
      });*/
 
+     var words = [];
     $scope.getTweets = function () {
-        if ($scope.searched_keyword) {
+        var a_word = $scope.searched_keyword
+        if (a_word) {
 
-            var word = $scope.searched_keyword;
-            console.log(word);
-            socket.emit('word', word);
-            socket.on('tweet_' + word, function (tweet) {
-                console.log(word, tweet.id);
+            if (words.length!=0) {
+                console.log(words);
+                socket.emit('remove', words[0]);
+                words.length=0;
+            }
+            $scope.tweets = [];
+            words.push(a_word);
+            console.log(a_word);
+            socket.emit('word', a_word);
+            socket.on('tweet_' + a_word, function (tweet) {
+                console.log(a_word, tweet.id);
                 tweet.positions = getLatLng(tweet);
+                tweet.icon = {
+                    url: "/images/marker-logo.png",
+                    scaledSize: {width: 20, height: 27}
+                };
                 $scope.tweets.push(tweet);
             });
+        }
+    };
+
+    $scope.onClick = function (marker, eventName, model) {
+        console.log("Clicked!");
+        model.show = !model.show;
+    };
+
+    $scope.map_options = {
+        cluster: {
+            minimumClusterSize: 10,
+            zoomOnClick: true,
+            styles: [{
+                url: "icons/m4-fab.png",
+                width: 60,
+                height: 60,
+                textColor: 'white',
+                textSize: 14,
+                fontFamily: 'Open Sans'
+            }],
+            averageCenter: true,
+            clusterClass: 'cluster-icon'
         }
     };
 
@@ -142,29 +176,29 @@ main.directive('slideBtn', function () {
 
     var event = function (element, attr) {
         element.offset()
-        $('.sidebar-left .slide-submenu').on('click',function() {
+        $('.sidebar-left .slide-submenu').on('click', function () {
             var context_element = $(this);
             context_element.closest('.sidebar-body').fadeOut('slide', function () {
                 $('.mini-submenu-left').fadeIn().draggable();
             });
         });
 
-        $('.mini-submenu-left').on('dblclick',function() {
+        $('.mini-submenu-left').on('dblclick', function () {
             var context_element = $(this);
             $('.sidebar-left .sidebar-body').toggle('slide');
             context_element.hide();
         });
 
-        return function(scope,elem,attrs) {
-            var offset=element.offset();
-            scope.x=offset.left;
-            scope.y=offset.top;
+        return function (scope, elem, attrs) {
+            var offset = element.offset();
+            scope.x = offset.left;
+            scope.y = offset.top;
         }
     }
 
-    return{
-        restrict:'A',
-        compile:event
+    return {
+        restrict: 'A',
+        compile: event
     }
 });
 
@@ -173,13 +207,13 @@ main.directive('drag', function () {
     var event = function (element, attr) {
         $('.sidebar ').draggable();
 
-        return function(scope,elem,attrs) {
+        return function (scope, elem, attrs) {
         }
     }
 
-    return{
-        restrict:'A',
-        compile:event
+    return {
+        restrict: 'A',
+        compile: event
     }
 });
 

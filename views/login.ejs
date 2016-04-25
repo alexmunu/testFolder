@@ -1,44 +1,107 @@
-<div class="content">
-    <div class="jumbotron">
-        <div class="container text-center">
-            <h1>TwitTrack</h1>
-            <p>Localise, analyse and study posts from Twitter</p>
+<style>
+
+    #login-btn {
+        color: white;
+    }
+
+    .btn-lg {
+        border-radius: 50px;
+    }
+
+    .card-deck-wrapper {
+        padding-left: 300px;
+        padding-right: 300px;
+    }
+
+    .card {
+        background-color: inherit;
+        border-color: transparent;
+    }
+
+    .content {
+        height: 100%;
+    }
+
+    .card-img-top {
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .row.footer{
+        background-color: #4e5d6c;
+        height: 100%;
+        padding-top: 60px;
+    }
+
+    .img{
+        float:left;
+        padding-left: 140px;
+        display: block;
+    }
+
+
+</style>
+<div class="content" xmlns="http://www.w3.org/1999/html">
+    <section>
+        <div class="jumbotron ">
+            <img class="img" src="/images/twittrack-logo.png"/>
+            <div class="container ">
+                <h1>TwitTrack</h1>
+                <p>Localise and Analyse Media content from Twitter using a Google Map</p>
+            </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-4 col-md-push-4">
-
-            <div class="btn btn-lg btn-block"><a href="/login/twitter">Log In with Twitter</a></div>
-
+    </section>
+    <section>
+        <div class="row">
+            <div class="col-md-4 col-md-push-4">
+                <div class="btn btn-lg btn-block btn-primary"><a id="login-btn" href="/login/twitter">Log In with
+                        Twitter</a></div>
+            </div>
         </div>
-    </div>
-    <div class="row " style="padding: 20px">
-        <article class="">
-            <hr1 size="30"><p>Useful for</p></hr1>
-            <div class="col-sm-4 panel" id="article">
-                <div class="panel-heading">
-                    <p class="text-center">Social Commerce Improvement</p>
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <section>
+        <div class="card-deck-wrapper">
+            <div class="card-deck  ">
+                <div class="card">
+                    <img class="card-img-top" data-src="" src="/images/ecommerce-logo.png" alt="Card image cap">
+                    <div class="card-block">
+                        <h4 class="card-title" align="center">Social Commerce Improvement</h4>
+                        <p class="card-text" align="center">With this application is possible to fetch data from
+                            existing societies,
+                            influencers and social trends. This helps the investigation and analysis process to address
+                            the right
+                            products to defined geo-located bounds.</p>
+                    </div>
                 </div>
-                <div class="panel-body"></div>
-            </div>
-            <div class="col-sm-4 panel " id="article">
-                <div class="panel-heading">
-                    <p class="text-center">Social Epidemics Detection</p>
+                <div class="card">
+                    <img class="card-img-top" data-src="..." src="/images/epidemic-logo.png" alt="Card image cap">
+                    <div class="card-block">
+                        <h4 class="card-title" align="center">Social Epidemics Detection</h4>
+                        <p class="card-text" align="center"> As a disease can spread, equally, word of mouth spreads.
+                            This application can help to predict when and where this is spreading.</p>
+                    </div>
                 </div>
-                <div class="panel-body"></div>
-            </div>
-            <div class="col-sm-4 panel" id="article">
-                <div class="panel-heading">
-                    <p class="text-center">Crime Detection</p>
+                <div class="card">
+                    <img class="card-img-top" data-src="..." src="/images/crime-logo.png" alt="Card image cap">
+                    <div class="card-block">
+                        <h4 class="card-title" align="center">Crime Detection</h4>
+                        <p class="card-text" align="center">The filtering function implemented in this application facilitates crime detection.</p>
+                    </div>
                 </div>
-                <div class="panel-body"></div>
             </div>
-        </article>
-    </div>
-
-    <hr>
-    <footer class="container-fluid text-center">
+        </div>
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row footer">
+    <footer class="container-fluid text-center" align="center">
         <div style="font-size: 90%" align="center"><p>Please contact
                 <!-- START: CHANGE THE EMAIL ADDRESS IN 2 PLACES BELOW TO THE CORRECT CONTACT PERSON FOR THIS WEB PAGE -->
                 <a href="mailto:alessandro.munufie@stu.mmu.ac.uk">alessandro.munufie@stu.mmu.ac.uk</a>
@@ -47,5 +110,5 @@
                 with your questions, comments, and suggestions.<br/>
                 Copyright &copy; Alessandro Munufie</a>. All rights reserved.</p>
         </div>
-    </footer>
+    </footer></div>
 </div>

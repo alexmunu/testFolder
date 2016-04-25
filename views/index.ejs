@@ -2,12 +2,13 @@
 <head>
     <title>TwitTrack</title>
     <link rel='stylesheet' href='./stylesheets/bootstrap.min.css'/>
-    <link rel='stylesheet' href='./stylesheets/mockup_style.css'/>
+    <link rel="stylesheet" href="./stylesheets/bootstrap-theme.min.css"/>
+    <link rel='stylesheet' href='./stylesheets/style.css'/>
     <link rel="stylesheet" href="./stylesheets/font-awesome.css"/>
 
 </head>
 <body ng-app="twitrackApp">
-<div ng-controller="appController as vm" class="ng-cloak" >
+<div ng-controller="appController as vm" class="ng-cloak">
     <div class="container">
         <nav class="navbar navbar-fixed-top navbar-default">
             <div class="container-fluid">
@@ -55,7 +56,12 @@
         </nav>
     </div>
     <ui-gmap-google-map center="{latitude:30, longitude:0}" zoom="3">
-        <ui-gmap-marker ng-repeat="tweet in tweets" idKey="tweet.id" coords="tweet.positions"></ui-gmap-marker>
+        <ui-gmap-markers models="tweets" coords="'positions'" doCluster="true" click="onClick" icon="'icon'">
+            <ui-gmap-windows show="show">
+                <div ng-non-bindable class="text-primary">{{text}}</div>
+            </ui-gmap-windows>
+        </ui-gmap-markers>
+
     </ui-gmap-google-map>
 
     <div class="row main-row" id="row-list">
@@ -75,17 +81,23 @@
                     </div>
                     <div id="layers" class="panel-collapse collapse in">
                         <div class="panel-body list-body">
-                            <div id="tweet" ng-repeat="tweet in tweets">
+                            <div id="tweet" ng-repeat="tweet in tweets track by $index">
                                 <div>
                                     <blockquote>
-                                        <div class="blockquote-quote"><img class="blockquote-image img-circle" src="{{tweet.user.profile_image_url}}" ><span class="blockquote-text">{{tweet.text}}</span></div>
-                                        <footer>
-                                            <cite title="{{tweet.user.screen_name}}">@{{tweet.user.screen_name}}</cite>
-                                        </footer>
+                                        <div class="blockquote-quote-img">
+                                            <img class="img-circle" src="{{tweet.user.profile_image_url}}">
+                                        </div>
+                                        <div class="blockquote-text">
+                                            <span>{{tweet.text}}</span>
+
+                                            <footer>
+                                                <cite title="{{tweet.user.screen_name}}">@{{tweet.user.screen_name}}</cite>
+                                                <span class="time">  {{correctTimestring(tweet.created_at)}}</span>
+                                            </footer>
+                                        </div>
                                     </blockquote>
                                 </div>
                                 <div id="web_intent">
-                                    <span class="time">{{relative_time(tweet.created_at)}}</span>
                                     <i class="fa fa-retweet" width="16" height="16" alt="Retweet"></i>
                                     <a href="http://twitter.com/intent/retweet?tweet_id={{tweet.id_str }}">Retweet</a>
                                     <i class="fa fa-mail-reply" width="16" height="16" alt="Reply"></i>
