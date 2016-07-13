@@ -37,3 +37,19 @@ The final result is to develop a Google-Mapping geotagged Post from Twitter Web 
 
 __*Requirements*__
 
+1. Install MongoDB
+   1. The installation process outlined shortly is as follows:
+   2. Download and extract the archive file
+   3. Run mongod binary (usually located in the bin folder of the extracted archive)
+   4. Create the folder to store the database files (the default folder is /data/db)
+   5. Make sure port 27017 is free to use
+2. Install Node.js
+3. Navigate to the TwitTrack folder and run in command line the instruction: npm install
+4. The application will listen on port 30000. (Make sure port 3000 is free)
+5. On a web browser insert url http://127.0.0.1:3000 to run application.
+
+*A good guide on how to install MongoDB and Node.js can be found at https://hackhands.com/how-to-get-started-on-the-mean-stack/*
+
+Youtube video at: https://youtu.be/fF2Kx3WA5nE
+
+
