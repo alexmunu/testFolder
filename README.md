@@ -50,6 +50,6 @@ __*Requirements*__
 
 *A good guide on how to install MongoDB and Node.js can be found at https://hackhands.com/how-to-get-started-on-the-mean-stack/*
 
-Youtube video at: https://youtu.be/fF2Kx3WA5nE
+Youtube Demo at: https://youtu.be/fF2Kx3WA5nE
 
 
