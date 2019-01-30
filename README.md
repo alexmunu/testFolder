@@ -3,8 +3,8 @@
 
 __*Background*__
 
-By now we are aware that Social Media has had a tremendous impact on our culture, in business, on the world-at-large. 
-Social Media websites are some of the most popular point of communication on the internet. 
+By now we are aware that Social Media has a tremendous impact in our culture, in business, on the world-at-large. 
+Social Media web-applications are some of the most popular point of communication on the internet. 
 They have revolutionised the way people communicate and socialise on the Web. 
 Aside from the world of gossiping, there are some positive and negative real impacts; and these are: 
 
@@ -17,12 +17,12 @@ IMPACT ON BUSINESS: Many companies have realised how Social Media eases the proc
 IMPACT ON SOCIALISATION: Social Networking has made it possible to connect different people around the world to share and discover various kind of interest. 
 	                        On it people can learn about different cultures and societies by connecting with people in other countries.
 
-Two questions I put myself:
+Two questions I asked myself where:
 
 1. How to use this technologies to improve our society? 
 2. How to prevent bad behaviours to arise in our society?
 
-The initial reasoning has brought to the conclusion that we should be able to prevent harmful behaviours by analysing society trends, opinions or actions.
+The initial reasoning has brought me to the conclusion that we should be able to prevent harmful behaviours by analysing society trends, opinions or actions.
 
 __*Solution*__
 
