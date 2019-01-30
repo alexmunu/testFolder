@@ -3,8 +3,8 @@ var Strategy = require('passport-twitter').Strategy;
 
 
 passport.use(new Strategy({
-        consumerKey: process.env.CONSUMER_KEY || 'ls0WaY14Ey2T3JKrYmeJnWBov',
-        consumerSecret: process.env.CONSUMER_SECRET || '4mAV5XmARLO46mP2b01ckuwHQ2NnMFrhUBr3qOmowmHDLnzBTN',
+        consumerKey: process.env.CONSUMER_KEY ,
+        consumerSecret: process.env.CONSUMER_SECRET ,
         callbackURL: 'http://127.0.0.1:3000/login/twitter/return'
     },
     function(token, tokenSecret, profile, cb) {
